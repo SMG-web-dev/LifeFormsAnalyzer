@@ -1,63 +1,31 @@
-import React, { useState, useCallback } from 'react';
-import { Microscope } from 'lucide-react';
-import { ImageUpload } from './components/ImageUpload';
-import { AnalysisResult as AnalysisResultComponent } from './components/AnalysisResult';
-import type { AnalysisResult } from './types';
-import { GeminiService } from './services/geminiService';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Header from './components/header';
+import { Footer } from './components/footer';
+import Home from './pages/Home';
 
-// Initialize the service
-const geminiService = new GeminiService({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY || ''
-});
-
-function App() {
-  const [result, setResult] = useState<AnalysisResult | null>(null);
-
-  const handleImageSelect = useCallback(async (file: File) => {
-    setResult({ status: 'processing' });
-    
-    try {
-      const analysisResult = await geminiService.analyzeImage(file);
-      setResult(analysisResult);
-    } catch (error) {
-      setResult({
-        status: 'error',
-        error: 'Failed to analyze image. Please try again.'
-      });
-    }
-  }, []);
-
+function BackgroundEffect() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center">
-            <Microscope className="w-8 h-8 text-emerald-600" />
-            <h1 className="ml-3 text-2xl font-bold text-gray-900">
-              Specimen Identifier
-            </h1>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="space-y-8">
-          <div>
-            <h2 className="text-lg font-medium text-gray-900">
-              Upload Specimen Image
-            </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Upload a clear image of your specimen for identification. Supported formats: JPEG, PNG
-            </p>
-          </div>
-
-          <ImageUpload onImageSelect={handleImageSelect} />
-
-          {result && <AnalysisResultComponent result={result} />}
-        </div>
-      </main>
+    <div className="fixed inset-0 -z-10">
+      <div className="absolute inset-0 bg-gradient-to-br from-forest-950 via-forest-900 to-forest-950 animate-gradient-shift" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvc3ZnPg==')] opacity-[0.03]" />
     </div>
   );
 }
 
+function App() {
+  return (
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <BackgroundEffect />
+        <Header />
+        <main className="flex-grow max-w-7xl mx-auto px-6 py-12">
+          <Home />
+        </main>
+        <Footer />
+      </div>
+    </Router>
+  );
+}
+
 export default App;
+
